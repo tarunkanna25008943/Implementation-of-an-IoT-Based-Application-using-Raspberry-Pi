@@ -24,16 +24,7 @@ To implement an IoT-based environmental monitoring application using Raspberry P
 ---
 
 # Circuit Diagram
-
----
-
-**To upload Wokwi circuit diagram**
-
----
-
-# Circuit Connections
-
-
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/fbea9584-e923-4263-9835-c9d511031fb7" />
 
 # IoT Application
 
@@ -134,11 +125,49 @@ The LED is used as a local status indicator. It turns ON when the measured tempe
 ---
 
 # Program
+```
+import time
+import board
+import adafruit_dht
+import requests
 
+# DHT11 connected to GPIO4
+dht = adafruit_dht.DHT11(board.D4)
 
+# ThingSpeak settings
+API_KEY = "YOUR_THINGSPEAK_WRITE_API_KEY"
+URL = "https://api.thingspeak.com/update"
+
+while True:
+    try:
+        temperature = dht.temperature
+        humidity = dht.humidity
+
+        print("Temperature:", temperature, "°C")
+        print("Humidity:", humidity, "%")
+
+        # Send data to ThingSpeak
+        data = {
+            "api_key": API_KEY,
+            "field1": temperature,
+            "field2": humidity
+        }
+
+        response = requests.get(URL, params=data)
+
+        if response.status_code == 200:
+            print("Data uploaded successfully")
+        else:
+            print("Upload failed")
+
+    except Exception as e:
+        print("Sensor error:", e)
+
+    time.sleep(20)
+```
 # Observation
 
-
+<img width="400" height="623" alt="image" src="https://github.com/user-attachments/assets/1c4935be-a1f9-4354-aeac-9c34532f78b2" />
 
 # Result
 
